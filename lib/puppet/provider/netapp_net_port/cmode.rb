@@ -33,9 +33,10 @@ Puppet::Type.type(:netapp_net_port).provide(:cmode, :parent => Puppet::Provider:
 
   def self.prefetch(resources)
     Puppet.debug("Puppet::Provider::Netapp_net_port.cmode: Got to self.prefetch.")
-    instances.each do |prov|
-      if resource = resources[prov.node_port_name]
-        resource.provider = prov
+    net_ports = instances
+    resources.each do |name, resource|
+      if provider = net_ports.find { |net_port| net_port.name == resource[:node_port_name] }
+        resources[name].provider = provider
       end
     end
   end
